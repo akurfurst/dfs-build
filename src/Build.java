@@ -101,6 +101,20 @@ public class Build {
    * @return a set of values that cannot be reached from the starting value
    */
   public static <T> Set<T> unreachable(Map<T, List<T>> graph, T starting) {
-    return new HashSet<>();
+    Set<T> path = new HashSet<>();
+    Set<T> result = new HashSet<>();
+    findPath(graph, starting, path);
+    for(T current : graph.keySet()){
+      if(!path.contains(current)) result.add(current);
+    }
+    return result;
+  }
+
+  private static <T> void findPath(Map<T, List<T>> graph, T current, Set<T> visited){
+    if(current == null || visited.contains(current)) return;
+    visited.add(current);
+    List<T> neighbors = graph.get(current);
+    if(neighbors == null) return;
+    for(T neighbor : neighbors) findPath(graph, neighbor, visited);
   }
 }
